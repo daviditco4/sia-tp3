@@ -2,8 +2,9 @@ import numpy as np
 
 
 class Perceptron:
-    def __init__(self, learning_rate=0.1, max_iterations=1000):
+    def __init__(self, learning_rate=0.1, epsilon=0.02, max_iterations=1000):
         self.learning_rate = learning_rate
+        self.epsilon = epsilon
         self.max_iterations = max_iterations
         self.weights = None
 
@@ -11,6 +12,10 @@ class Perceptron:
         # Initialize weights randomly in the range [-1, 1]
         self.weights = np.random.rand(n_features) * 2 - 1
         print(self.weights)
+
+    @staticmethod
+    def activate(excitation):
+        return np.sign(excitation)
 
     def predict(self, x):
         # Calculate the activation, including the bias as part of weights
@@ -25,14 +30,13 @@ class Perceptron:
         n_samples, n_features = x.shape
         self.initialize_weights(n_features)
 
-        error = 1
-        min_error = n_samples * 2
+        min_error = self.epsilon * 100 + 0.02
 
         iteration = 0
-        while error > 0 and iteration < self.max_iterations:
+        while min_error >= self.epsilon and iteration < self.max_iterations:
             ix = np.random.randint(0, n_samples)  # Randomly select an index
             excitation = np.dot(x[ix], self.weights)
-            activation = np.sign(excitation)
+            activation = self.activate(excitation)
 
             # Update weights
             delta_w = self.learning_rate * (y[ix] - activation) * x[ix]
