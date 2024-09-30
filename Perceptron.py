@@ -17,10 +17,17 @@ class Perceptron:
     def activate(excitations):
         return np.where(excitations == 0, 1, np.sign(excitations))
 
-    def predict(self, x):
+    #def predict(self, x):
         # Calculate the excitations, including the bias as part of weights
+     #   excitations = np.dot(x, self.weights)
+     #   return self.activate(excitations)
+    
+    def predict(self, x):
+    # Calculate the excitations, including the bias as part of weights
         excitations = np.dot(x, self.weights)
-        return self.activate(excitations)
+    
+    # Apply threshold: return 1 for positive excitations, -1 for negative or zero
+        return np.where(excitations > 0, 1, -1)
 
     def calculate_error(self, x, y):
         predictions = self.predict(x)

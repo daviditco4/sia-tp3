@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 class Perceptron:
-    def __init__(self, learning_rate=0.00001, error_limit=0, max_iterations=10000):
+    def __init__(self, learning_rate=0.025, error_limit=0, max_iterations=10000):
         self.learning_rate = learning_rate
         self.error_limit = error_limit
         self.max_iterations = max_iterations
@@ -13,10 +13,20 @@ class Perceptron:
         self.weights = np.random.rand(n_features) * 2 - 1
         print("Initial weights:", self.weights)
 
-    def predict(self, X):
+    #def predict(self, X):
         # Compute the dot product of inputs and weights
-        excitations = np.dot(X, self.weights)
-        return self.activate(excitations)
+     #   excitations = np.dot(X, self.weights)
+     #   return self.activate(excitations)
+    
+    def predict(self, x):
+        # Calculate the excitations, including the bias as part of weights
+        excitations = np.dot(x, self.weights)
+    
+    # Apply the sigmoid activation function
+        activations = self.activate(excitations)
+    
+    # Apply threshold: return 1 for activations > 0.5, -1 for activations <= 0.5
+        return np.where(activations > 0.5, 1, -1)
 
     def fit(self, X, y, regularization_factor=0.01):
         n_samples, n_features = X.shape
@@ -64,7 +74,7 @@ class NonlinearPerceptron(Perceptron):
 
 # Example usage
 if __name__ == "__main__":
-    # Read the CSV file (replace with actual file path if needed)
+    # Read the CSV file
     df = pd.read_csv('TP3-ej2-conjunto.csv')
 
     # Convert DataFrame to NumPy array
