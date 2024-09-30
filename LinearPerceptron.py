@@ -3,7 +3,7 @@ import numpy as np
 
 from Perceptron import Perceptron
 
-
+#task 2 linear part
 class LinearPerceptron(Perceptron):
     def __init__(self, learning_rate=0.025, error_limit=0, max_iterations=10000):
         super().__init__(learning_rate, error_limit, max_iterations)
