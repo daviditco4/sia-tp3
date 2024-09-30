@@ -5,11 +5,19 @@ from Perceptron import Perceptron
 
 
 class LinearPerceptron(Perceptron):
+    def __init__(self, learning_rate=0.025, error_limit=0, max_iterations=10000):
+        super().__init__(learning_rate, error_limit, max_iterations)
+
     @staticmethod
     def activate(excitation):
         return excitation
 
+    def calculate_error(self, x, y):
+        predictions = self.predict_all(x)
+        return 0.5 * np.sum((y - predictions) ** 2)  # Almost Sum of Squared Errors
 
+
+# Example usage
 if __name__ == "__main__":
     # Read the CSV file
     df = pd.read_csv('exercise2/data/set.csv')
@@ -27,7 +35,7 @@ if __name__ == "__main__":
     # Concatenate the column of ones to the matrix
     X = np.hstack((ones_column, X))
 
-    perceptron = LinearPerceptron(learning_rate=0.1, epsilon=0, max_iterations=1000)
+    perceptron = LinearPerceptron(learning_rate=0.025, max_iterations=10000)
     trained_weights = perceptron.fit(X, Y)
 
     print("Trained weights (including bias):", trained_weights)
