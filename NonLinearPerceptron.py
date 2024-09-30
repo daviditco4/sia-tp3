@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 class Perceptron:
-    def __init__(self, learning_rate=0.025, error_limit=0, max_iterations=10000):
+    def __init__(self, learning_rate=0.00001, error_limit=0, max_iterations=10000):
         self.learning_rate = learning_rate
         self.error_limit = error_limit
         self.max_iterations = max_iterations
@@ -18,7 +18,7 @@ class Perceptron:
         excitations = np.dot(X, self.weights)
         return self.activate(excitations)
 
-    def fit(self, X, y):
+    def fit(self, X, y, regularization_factor=0.01):
         n_samples, n_features = X.shape
         self.initialize_weights(n_features)
         
@@ -29,8 +29,11 @@ class Perceptron:
             ix = np.random.randint(0, n_samples)  # Randomly select an index
             activation = self.predict(X[ix])
 
-            # Update weights using the perceptron learning rule
-            delta_w = self.learning_rate * (y[ix] - activation) * X[ix]
+            # Update weights using the perceptron learning rule + regularization
+            delta_w = self.learning_rate * (y[ix] - activation) * X[ix] - regularization_factor * self.weights
+            
+            # Clip the weight updates to avoid exploding weights
+            delta_w = np.clip(delta_w, -1, 1)
             self.weights += delta_w
 
             # Calculate the current error
@@ -51,7 +54,7 @@ class Perceptron:
 class NonlinearPerceptron(Perceptron):
     @staticmethod
     def activate(excitations):
-        # Sigmoid activation function
+        excitations = np.clip(excitations, -300, 300)  # Adjust the range if necessary
         return 1 / (1 + np.exp(-excitations))
 
     def calculate_error(self, X, y):
@@ -75,6 +78,10 @@ if __name__ == "__main__":
     ones_column = np.ones((X.shape[0], 1))
     X = np.hstack((ones_column, X))
 
+    # Normalize the input features to the range [-1, 1], avoiding division by zero
+    epsilon = 1e-8
+    X = 2 * (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0) + epsilon) - 1
+   
     # Initialize the Nonlinear Perceptron and train it
     perceptron = NonlinearPerceptron(learning_rate=0.025, max_iterations=10000)
     trained_weights = perceptron.fit(X, y)
