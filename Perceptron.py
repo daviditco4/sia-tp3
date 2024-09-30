@@ -14,19 +14,16 @@ class Perceptron:
         print(self.weights)
 
     @staticmethod
-    def activate(excitation):
-        return np.sign(excitation)
+    def activate(excitations):
+        return np.where(excitations == 0, 1, np.sign(excitations))
 
-    def predict(self, xi):
-        # Calculate the excitation, including the bias as part of weights
-        excitation = np.dot(xi, self.weights)
-        return self.activate(excitation)
-
-    def predict_all(self, x):
-        return [self.predict(x) for x in x]
+    def predict(self, x):
+        # Calculate the excitations, including the bias as part of weights
+        excitations = np.dot(x, self.weights)
+        return self.activate(excitations)
 
     def calculate_error(self, x, y):
-        predictions = self.predict_all(x)
+        predictions = self.predict(x)
         return np.sum(predictions != y)
 
     def fit(self, x, y):

@@ -9,11 +9,11 @@ class LinearPerceptron(Perceptron):
         super().__init__(learning_rate, error_limit, max_iterations)
 
     @staticmethod
-    def activate(excitation):
-        return excitation
+    def activate(excitations):
+        return excitations
 
     def calculate_error(self, x, y):
-        predictions = self.predict_all(x)
+        predictions = self.predict(x)
         return 0.5 * np.sum((y - predictions) ** 2)  # Almost Sum of Squared Errors
 
 
