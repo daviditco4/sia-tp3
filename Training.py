@@ -25,7 +25,7 @@ if __name__ == "__main__":
     ones_column = np.ones((X.shape[0], 1))
     X = np.hstack((ones_column, X))
 
-    # Normalize the input features to the range [-1, 1]
+    # Normalize the input features to the range [-1, 1] 
     epsilon = 1e-8
     X = 2 * (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0) + epsilon) - 1
 
