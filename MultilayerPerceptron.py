@@ -2,28 +2,29 @@ import numpy as np
 
 
 class Perceptron:
-    def __init__(self, layer_sizes, learning_rate=0.1):
+    def __init__(self, layer_sizes, beta=1, learning_rate=0.1):
         self.layer_sizes = layer_sizes  # List defining the number of neurons per layer
+        self.beta = beta
         self.learning_rate = learning_rate
         self.weights = None
 
     # Sigmoid activation function
-    @staticmethod
-    def sigmoid(x):
-        return 1 / (1 + np.exp(-x))
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-(self.beta * x)))
 
     # Derivative of the sigmoid (calculated on weighted sums, not activations)
-    @staticmethod
-    def sigmoid_derivative(x):
-        sigmoid_val = Perceptron.sigmoid(x)
-        return sigmoid_val * (1 - sigmoid_val)
+    def sigmoid_derivative(self, x):
+        sigmoid_val = self.sigmoid(x)
+        return self.beta * sigmoid_val * (1 - sigmoid_val)
 
     # Initialize the weights for all layers
     def initialize_weights(self):
         weights = []
         for i in range(len(self.layer_sizes) - 1):
-            w = np.random.randn(self.layer_sizes[i], self.layer_sizes[i + 1]) * 0.1
+            # Initialize weights randomly in the range [-1, 1]
+            w = np.random.rand(self.layer_sizes[i], self.layer_sizes[i + 1]) * 2 - 1
             weights.append(w)
+        print('INITIAL:', weights)
         self.weights = weights
 
     # Forward propagation with returning activations and excitations (weighted sums)
@@ -110,10 +111,10 @@ if __name__ == "__main__":
     Y = np.array([[0], [1], [1], [0]])  # Expected outputs
 
     # Instantiate the Perceptron class
-    mlp = Perceptron([2, 2, 1], 0.1)
+    mlp = Perceptron([2, 4, 1], beta=5, learning_rate=0.1)
 
     # Train the MLP
-    trained_weights, err = mlp.train(X, Y, 10000, 0)
+    trained_weights, err = mlp.train(X, Y, 100000, 0)
 
     print("Trained weights:", trained_weights)
     print("Minimum error:", err)
