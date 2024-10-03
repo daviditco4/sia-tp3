@@ -96,6 +96,7 @@ class Perceptron:
 
             iteration += 1
 
+        print(iteration)
         return best_weights, min_error
 
     # Predict output for given input X
@@ -111,10 +112,10 @@ if __name__ == "__main__":
     Y = np.array([[0], [1], [1], [0]])  # Expected outputs
 
     # Instantiate the Perceptron class
-    mlp = Perceptron([2, 4, 1], beta=5, learning_rate=0.1)
+    mlp = Perceptron([2, 4, 1], beta=3, learning_rate=0.1)
 
     # Train the MLP
-    trained_weights, err = mlp.train(X, Y, 100000, 0)
+    trained_weights, err = mlp.train(X, Y, 100000, 0.1)
 
     print("Trained weights:", trained_weights)
     print("Minimum error:", err)
