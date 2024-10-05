@@ -2,11 +2,13 @@ import numpy as np
 
 
 class Perceptron:
-    def __init__(self, layer_sizes, beta=1, learning_rate=0.1):
+    def __init__(self, layer_sizes, beta=1, learning_rate=0.1, momentum=0):
         self.layer_sizes = layer_sizes  # List defining the number of neurons per layer
         self.beta = beta
         self.learning_rate = learning_rate
+        self.momentum = momentum
         self.weights = None
+        self.prev_weight_updates = None
 
     # Sigmoid activation function
     def sigmoid(self, x):
@@ -26,6 +28,7 @@ class Perceptron:
             weights.append(w)
         print('INITIAL:', weights)
         self.weights = weights
+        self.prev_weight_updates = [np.zeros_like(w) for w in self.weights]
 
     # Forward propagation with returning activations and excitations (weighted sums)
     def forward_propagation(self, x):
@@ -55,7 +58,9 @@ class Perceptron:
 
         # Calculate weight updates
         for i in range(len(self.weights)):
-            weight_updates[i] = self.learning_rate * np.dot(activations[i].T, errors[i])
+            weight_updates[i] = self.learning_rate * np.dot(activations[i].T, errors[i]) + self.momentum * \
+                                self.prev_weight_updates[i]
+            self.prev_weight_updates[i] = weight_updates[i]
 
         return weight_updates
 

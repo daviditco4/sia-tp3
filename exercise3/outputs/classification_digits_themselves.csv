@@ -1,2 +1,2 @@
-Elapsed Seconds,Layer Architecture,Beta,Learning Rate,Error Epsilon,Training Accuracy,Testing Accuracy
-0.5108950138092041,"[35, 15, 10]",1,8,0.02,1.0,"{'0.1': 1.0, '0.2': 0.7, '0.3': 0.4, '0.4': 0.1, '0.5': 0.0, '0.6': 0.0, '0.7': 0.0, '0.8': 0.0}"
+Elapsed Seconds,Layer Architecture,Beta,Learning Rate,Momentum,Error Epsilon,Training Accuracy,Testing Accuracy
+0.17434000968933105,"[35, 15, 10]",1,0.8,0.8,0.02,1.0,"{'0.1': 1.0, '0.2': 0.8, '0.3': 0.5, '0.4': 0.2, '0.5': 0.2, '0.6': 0.1, '0.7': 0.0, '0.8': 0.0}"

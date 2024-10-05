@@ -1,2 +1,2 @@
-Elapsed Seconds,Layer Architecture,Beta,Learning Rate,Error Epsilon,Accuracy
-0.06330490112304688,"[35, 16, 1]",3,0.1,0.1,1.0
+Elapsed Seconds,Layer Architecture,Beta,Learning Rate,Momentum,Error Epsilon,Accuracy
+0.030755043029785156,"[35, 5, 1]",1,2,0.8,0.001,1.0

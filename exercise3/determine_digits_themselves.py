@@ -59,12 +59,13 @@ def append_results_to_csv(file_path, elap_time, hyperparams, train_accu, test_ac
 
         # If the file is new, write the header first
         if not file_exists:
-            header = ["Elapsed Seconds", "Layer Architecture", "Beta", "Learning Rate", "Error Epsilon",
+            header = ["Elapsed Seconds", "Layer Architecture", "Beta", "Learning Rate", "Momentum", "Error Epsilon",
                       "Training Accuracy", "Testing Accuracy"]
             csvwriter.writerow(header)
 
         row = [elap_time, hyperparams["layer_sizes"], hyperparams["beta"], hyperparams["learning_rate"],
-               hyperparams["error_limit"], train_accu, test_accu]
+               hyperparams["momentum"] if 'momentum' in hyperparams else 0, hyperparams["error_limit"], train_accu,
+               test_accu]
         csvwriter.writerow(row)
 
 

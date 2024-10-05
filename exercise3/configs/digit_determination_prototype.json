@@ -5,6 +5,7 @@
     10
   ],
   "beta": 1,
-  "learning_rate": 8,
+  "learning_rate": 0.8,
+  "momentum": 0.8,
   "error_limit": 0.02
 }

@@ -28,17 +28,19 @@ def read_digits_from_txt(file_path):
 
 def read_hyperparameters_from_json(file_path):
     with open(file_path, 'r') as file:
-        hyperparams = json.load(file)
-    return hyperparams
+        hyperparameters = json.load(file)
+    return hyperparameters
 
 
-def train_perceptron(x, y, hyperparams):
+def train_perceptron(digits, labels, hyperparameters):
     # Initialize perceptron using the hyperparameters
-    p = Perceptron(layer_sizes=hyperparams["layer_sizes"], beta=hyperparams["beta"],
-                   learning_rate=hyperparams["learning_rate"])
+    mlp = Perceptron(hyperparameters["layer_sizes"], beta=hyperparameters["beta"],
+                     learning_rate=hyperparameters["learning_rate"],
+                     momentum=hyperparameters["momentum"] if 'momentum' in hyperparameters else 0)
 
     # Train the perceptron
-    best_weights, min_error = p.train(x, y, max_iterations=np.inf, error_limit=hyperparams["error_limit"])
+    best_weights, min_error = mlp.train(digits, labels, max_iterations=np.inf,
+                                        error_limit=hyperparameters["error_limit"])
 
     print(min_error)
-    return p
+    return mlp
