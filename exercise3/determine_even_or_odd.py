@@ -1,8 +1,14 @@
-import numpy as np
-import json
 import csv
-import time
+import json
+import numpy as np
+import os
 import sys
+import time
+
+# Add the path to the folder containing MultilayerPerceptron.py
+sys.path.append(os.path.abspath("."))
+
+# Now you can import MultilayerPerceptron
 from MultilayerPerceptron import Perceptron
 
 
@@ -27,10 +33,6 @@ def read_hyperparameters_from_json(file_path):
     return hyperparams
 
 
-def is_even(digit):
-    return 0 if digit % 2 == 0 else 1
-
-
 def train_perceptron(x, y, hyperparams):
     # Initialize perceptron using the hyperparameters
     p = Perceptron(layer_sizes=hyperparams["layer_sizes"], beta=hyperparams["beta"],
@@ -43,23 +45,24 @@ def train_perceptron(x, y, hyperparams):
     return p
 
 
-def append_results_to_csv(file_path, hyperparams, accu, elap_time):
+def append_results_to_csv(file_path, elap_time, hyperparams, accu):
+    file_exists = os.path.isfile(file_path)
     with open(file_path, 'a', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
-        row = [
-            elap_time,
-            hyperparams["layer_sizes"],
-            hyperparams["beta"],
-            hyperparams["error_limit"],
-            hyperparams["learning_rate"],
-            accu
-        ]
+
+        # If the file is new, write the header first
+        if not file_exists:
+            header = ["Elapsed Seconds", "Layer Architecture", "Beta", "Learning Rate", "Error Epsilon", "Accuracy"]
+            csvwriter.writerow(header)
+
+        row = [elap_time, hyperparams["layer_sizes"], hyperparams["beta"], hyperparams["learning_rate"],
+               hyperparams["error_limit"], accu]
         csvwriter.writerow(row)
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print("Usage: python classify_digits.py <digits_txt_file> <hyperparameters_json_file> <output_csv_file>")
+        print("Usage: python determine_even_or_odd.py <digits_txt_file> <hyperparameters_json_file> <output_csv_file>")
         sys.exit(1)
 
     digits_txt_file = sys.argv[1]
@@ -82,12 +85,12 @@ if __name__ == "__main__":
     # Predict on the training set to calculate accuracy
     predictions = mlp.predict(digits)
     predicted_labels = np.round(predictions)
-    accuracy = np.mean(predicted_labels == labels) * 100
+    accuracy = np.mean(predicted_labels == labels)
 
     # Calculate elapsed time
     elapsed_time = time.time() - start_time
 
     # Append results to CSV
-    append_results_to_csv(output_csv_file, hyperparameters, accuracy, elapsed_time)
+    append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, accuracy)
 
-    print(f"Training completed in {elapsed_time:.2f} seconds with {accuracy:.2f}% accuracy.")
+    print(f"Training completed in {elapsed_time:.2f} seconds with {accuracy * 100:.2f}% accuracy.")
