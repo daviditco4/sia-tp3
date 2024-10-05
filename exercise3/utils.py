@@ -1,4 +1,3 @@
-import csv
 import json
 import os
 import sys
@@ -43,18 +42,3 @@ def train_perceptron(x, y, hyperparams):
 
     print(min_error)
     return p
-
-
-def append_results_to_csv(file_path, elap_time, hyperparams, accu):
-    file_exists = os.path.isfile(file_path)
-    with open(file_path, 'a', newline='') as csvfile:
-        csvwriter = csv.writer(csvfile)
-
-        # If the file is new, write the header first
-        if not file_exists:
-            header = ["Elapsed Seconds", "Layer Architecture", "Beta", "Learning Rate", "Error Epsilon", "Accuracy"]
-            csvwriter.writerow(header)
-
-        row = [elap_time, hyperparams["layer_sizes"], hyperparams["beta"], hyperparams["learning_rate"],
-               hyperparams["error_limit"], accu]
-        csvwriter.writerow(row)

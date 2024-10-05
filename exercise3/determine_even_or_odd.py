@@ -1,10 +1,27 @@
+import csv
+import os
 import sys
 import time
 
 import numpy as np
 
-from utils import read_digits_from_txt, read_hyperparameters_from_json, train_perceptron, \
-    append_results_to_csv
+from utils import read_digits_from_txt, read_hyperparameters_from_json, train_perceptron
+
+
+def append_results_to_csv(file_path, elap_time, hyperparams, accu):
+    file_exists = os.path.isfile(file_path)
+    with open(file_path, 'a', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
+
+        # If the file is new, write the header first
+        if not file_exists:
+            header = ["Elapsed Seconds", "Layer Architecture", "Beta", "Learning Rate", "Error Epsilon", "Accuracy"]
+            csvwriter.writerow(header)
+
+        row = [elap_time, hyperparams["layer_sizes"], hyperparams["beta"], hyperparams["learning_rate"],
+               hyperparams["error_limit"], accu]
+        csvwriter.writerow(row)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
