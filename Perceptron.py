@@ -11,7 +11,7 @@ class Perceptron:
     def initialize_weights(self, n_features):
         # Initialize weights randomly in the range [-1, 1]
         self.weights = np.random.rand(n_features) * 2 - 1
-        print(self.weights)
+        #print(self.weights)
 
     @staticmethod
     def activate(excitations):
@@ -49,8 +49,7 @@ class Perceptron:
 
             iteration += 1
 
-        print(iteration)
-        return self.weights
+        return self.weights, iteration
 
 
 # Example usage
@@ -62,8 +61,18 @@ if __name__ == "__main__":
                   [1, 1, 1]])  # Each row has a bias (1) and two features
 
     Y = np.array([-1, -1, -1, 1])  # Labels for the AND problem
+    iteration = 0
+    iterations = []
 
     perceptron = Perceptron(learning_rate=0.1, max_iterations=1000)
-    trained_weights = perceptron.fit(X, Y)
+    
+    for i in range(500):
+        trained_weights, iteration = perceptron.fit(X, Y)
+        iterations.append(iteration)
+        #print("Trained weights (including bias):", trained_weights)
 
-    print("Trained weights (including bias):", trained_weights)
+    avg_iter = np.mean(iterations)
+    std_iter = np.std(iterations)
+    print(iterations)
+    print(avg_iter, std_iter)
+    
