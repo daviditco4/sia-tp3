@@ -18,7 +18,7 @@ results = {
     "Nonlinear Test Accuracy": []
 }
 
-# Run the process 10 times
+# Run the process 25 times
 for i in range(25):
     # Read the CSV file
     df = pd.read_csv('TP3-ej2-conjunto.csv')
