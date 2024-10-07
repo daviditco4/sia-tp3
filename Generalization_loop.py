@@ -19,7 +19,7 @@ results = {
 }
 
 # Run the process 10 times
-for i in range(10):
+for i in range(25):
     # Read the CSV file
     df = pd.read_csv('TP3-ej2-conjunto.csv')
 
@@ -43,16 +43,16 @@ for i in range(10):
     y_binary = np.where(y > median_value, 1, -1)
 
     # Split the dataset into training and test sets (80% training, 20% test)
-    X_train, X_test, y_train, y_test = train_test_split(X, y_binary, test_size=0.2, random_state=i)
+    X_train, X_test, y_train, y_test = train_test_split(X, y_binary, test_size=0.3, random_state=i)
 
     ## -- Train and Evaluate on Training Set --
 
     # Train the Linear Perceptron on training data
-    linear_perceptron = LinearPerceptron(learning_rate=0.025, max_iterations=10000)
+    linear_perceptron = LinearPerceptron(learning_rate=0.9, max_iterations=10000)
     linear_trained_weights = linear_perceptron.fit(X_train, y_train)
 
     # Train the Nonlinear Perceptron on training data
-    nonlinear_perceptron = NonlinearPerceptron(learning_rate=0.025, max_iterations=10000)
+    nonlinear_perceptron = NonlinearPerceptron(learning_rate=0.9, max_iterations=10000)
     nonlinear_trained_weights = nonlinear_perceptron.fit(X_train, y_train)
 
     ## -- Make Predictions and Calculate Training Accuracy --
@@ -85,6 +85,6 @@ for i in range(10):
 results_df = pd.DataFrame(results)
 
 # Save the results to a CSV file
-results_df.to_csv('perceptron_results.csv', index=False)
+results_df.to_csv('perceptron_results_lr0_9.csv', index=False)
 
 print("Results saved to perceptron_results.csv")
