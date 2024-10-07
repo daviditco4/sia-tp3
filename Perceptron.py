@@ -1,5 +1,5 @@
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 class Perceptron:
     def __init__(self, learning_rate=0.1, error_limit=1, max_iterations=1000):
@@ -60,19 +60,45 @@ if __name__ == "__main__":
                   [1, 1, -1],
                   [1, 1, 1]])  # Each row has a bias (1) and two features
 
-    Y = np.array([-1, -1, -1, 1])  # Labels for the AND problem
-    iteration = 0
-    iterations = []
-
-    perceptron = Perceptron(learning_rate=0.1, max_iterations=1000)
+    Y = np.array([-1, 1, 1, -1])  # Labels for the XOR problem
+    data = []
+    for i in range(9):
+        iteration = 0
+        iterations = []
+        
+        perceptron = Perceptron(learning_rate=(i+1)/10, max_iterations=1000)
+        
+        for i in range(25):
+            trained_weights, iteration = perceptron.fit(X, Y)
+            iterations.append(iteration)
+            #print("Trained weights (including bias):", trained_weights)
+            
+        data.append(iterations)
+        print(i+1)
     
-    for i in range(500):
-        trained_weights, iteration = perceptron.fit(X, Y)
-        iterations.append(iteration)
-        #print("Trained weights (including bias):", trained_weights)
+    # Calculate averages and standard deviations for each array
+    means = [np.mean(arr) for arr in data]
+    std_devs = [np.std(arr, ddof=1) for arr in data]  # Sample standard deviation
+    
+    # Plotting
+fig, ax = plt.subplots()
 
-    avg_iter = np.mean(iterations)
-    std_iter = np.std(iterations)
-    print(iterations)
-    print(avg_iter, std_iter)
+# Bar positions
+x_pos = np.arange(len(data))
+
+# Create bar chart with error bars representing the standard deviation
+ax.bar(x_pos, means, yerr=std_devs, capsize=5, color='skyblue', edgecolor='black')
+
+# Labels and title
+ax.set_xlabel('Learning Rate')
+ax.set_ylabel('Average Value of iterations')
+ax.set_title('Average Iterations by learning rate')
+ax.set_xticks(x_pos)
+ax.set_xticklabels([f'{(i+1)/10}' for i in range(len(data))])  # Label each dataset
+
+# Show the plot
+plt.tight_layout()
+plt.show()
+    
+    
     
