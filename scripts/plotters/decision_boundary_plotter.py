@@ -21,7 +21,7 @@ def plot_decision_boundary(weights):
 # Function to load weights from a CSV file
 def load_weights(csv_file):
     data = pd.read_csv(csv_file, sep=';', converters=dict(weights=literal_eval))
-    weights = data['weights'].values[3]
+    weights = data['weights'].values[8]
     print(weights)
     return weights
 
