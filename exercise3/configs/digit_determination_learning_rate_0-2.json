@@ -1,0 +1,11 @@
+{
+  "layer_sizes": [
+    35,
+    15,
+    10
+  ],
+  "beta": 1,
+  "learning_rate": 0.2,
+  "momentum": 0.8,
+  "error_limit": 0.02
+}

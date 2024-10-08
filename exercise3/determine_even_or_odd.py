@@ -8,7 +8,7 @@ import numpy as np
 from utils import read_digits_from_txt, read_hyperparameters_from_json, train_perceptron
 
 
-def append_results_to_csv(file_path, elap_time, hyperparams, accu):
+def append_results_to_csv(file_path, elap_time, hyperparams, iters, accu):
     file_exists = os.path.isfile(file_path)
     with open(file_path, 'a', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
@@ -16,11 +16,11 @@ def append_results_to_csv(file_path, elap_time, hyperparams, accu):
         # If the file is new, write the header first
         if not file_exists:
             header = ["Elapsed Seconds", "Layer Architecture", "Beta", "Learning Rate", "Momentum", "Error Epsilon",
-                      "Accuracy"]
+                      "Iterations", "Accuracy"]
             csvwriter.writerow(header)
 
         row = [elap_time, hyperparams["layer_sizes"], hyperparams["beta"], hyperparams["learning_rate"],
-               hyperparams["momentum"] if 'momentum' in hyperparams else 0, hyperparams["error_limit"], accu]
+               hyperparams["momentum"] if 'momentum' in hyperparams else 0, hyperparams["error_limit"], iters, accu]
         csvwriter.writerow(row)
 
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     hyperparameters = read_hyperparameters_from_json(hyperparameters_json_file)
 
     # Train the perceptron
-    mlp = train_perceptron(digits, labels, hyperparameters)
+    mlp, iterations = train_perceptron(digits, labels, hyperparameters)
 
     # Predict on the training set to calculate accuracy
     predictions = mlp.predict(digits)
@@ -55,6 +55,6 @@ if __name__ == "__main__":
     elapsed_time = time.time() - start_time
 
     # Append results to CSV
-    append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, accuracy)
+    append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, iterations, accuracy)
 
     print(f"Training completed in {elapsed_time:.2f} seconds with {accuracy * 100:.2f}% accuracy.")

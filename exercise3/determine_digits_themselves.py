@@ -41,18 +41,18 @@ def test_perceptron(p, dgts):
     accuracies = {}
 
     for i in range(1, 9):
-        noise_level = i * 0.1
+        noise_level = i * 0.05
         noisy_digits = apply_noise_to_bitmaps(dgts, noise_level)
         preds = p.predict(noisy_digits)
         pred_labels = np.argmax(preds, axis=1)
         lbls = np.argmax(generate_labels_for_digits(), axis=1)
         accu = np.mean(pred_labels == lbls)
-        accuracies[f"{noise_level:.1f}"] = accu
+        accuracies[f"{noise_level:.2f}"] = accu
 
     return accuracies
 
 
-def append_results_to_csv(file_path, elap_time, hyperparams, train_accu, test_accu):
+def append_results_to_csv(file_path, elap_time, hyperparams, iters, train_accu, test_accu):
     file_exists = os.path.isfile(file_path)
     with open(file_path, 'a', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
@@ -60,12 +60,12 @@ def append_results_to_csv(file_path, elap_time, hyperparams, train_accu, test_ac
         # If the file is new, write the header first
         if not file_exists:
             header = ["Elapsed Seconds", "Layer Architecture", "Beta", "Learning Rate", "Momentum", "Error Epsilon",
-                      "Training Accuracy", "Testing Accuracy"]
+                      "Iterations", "Training Accuracy", "Testing Accuracy"]
             csvwriter.writerow(header)
 
         row = [elap_time, hyperparams["layer_sizes"], hyperparams["beta"], hyperparams["learning_rate"],
-               hyperparams["momentum"] if 'momentum' in hyperparams else 0, hyperparams["error_limit"], train_accu,
-               test_accu]
+               hyperparams["momentum"] if 'momentum' in hyperparams else 0, hyperparams["error_limit"], iters,
+               train_accu, test_accu]
         csvwriter.writerow(row)
 
 
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # Train the perceptron
-    mlp = train_perceptron(digits, labels, hyperparameters)
+    mlp, iterations = train_perceptron(digits, labels, hyperparameters)
 
     # Calculate elapsed time
     elapsed_time = time.time() - start_time
@@ -106,6 +106,6 @@ if __name__ == "__main__":
     testing_accuracy = test_perceptron(mlp, digits)
 
     # Append results to CSV
-    append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, training_accuracy, testing_accuracy)
+    append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, iterations, training_accuracy, testing_accuracy)
 
     print(f"Training completed in {elapsed_time:.2f} seconds with {training_accuracy * 100:.2f}% training accuracy.")

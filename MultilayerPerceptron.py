@@ -102,7 +102,7 @@ class Perceptron:
             iteration += 1
 
         print(iteration)
-        return best_weights, min_error
+        return best_weights, min_error, iteration
 
     # Predict output for given input X
     def predict(self, x):
