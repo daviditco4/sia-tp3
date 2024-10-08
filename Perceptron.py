@@ -4,17 +4,19 @@ import matplotlib.pyplot as plt
 def min_max_normalize(X):
         X_min = np.min(X, axis=0)
         X_max = np.max(X, axis=0)
-        return 2*((X - X_min) / (X_max - X_min))-1, X_min, X_max
+        epsilon = 1e-8
+        return 2*((X - X_min) / (X_max - X_min + epsilon))-1, X_min, X_max
     
 # Function to normalize output data (optional, but typically binary 0/1)
 def min_max_normalize_output(y):
     y_min = np.min(y)
     y_max = np.max(y)
-    return 2*((y - y_min) / (y_max - y_min))-1, y_min, y_max
+    epsilon = 1e-8
+    return 2*((y - y_min) / (y_max - y_min + epsilon))-1, y_min, y_max
 
 # Function to denormalize output back to original scale (useful for regression tasks)
 def denormalize_output(y_norm, y_min, y_max):
-    return ((y_norm + 1)/2) * (y_max - y_min) + y_min
+    return ((y_norm + 1)/2) * (y_max - y_min + 1e-8) + y_min
 
 
 class Perceptron:
