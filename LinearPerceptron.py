@@ -47,7 +47,7 @@ class LinearPerceptron(Perceptron):
 
     def calculate_error(self, x, y):
         predictions = self.predict(x)
-        return 0.5 * np.sum((y - predictions) ** 2)  # Almost Sum of Squared Errors
+        return (1/len(predictions)) * np.sum((y - predictions) ** 2)  # Almost Sum of Squared Errors
 
 
 # Example usage

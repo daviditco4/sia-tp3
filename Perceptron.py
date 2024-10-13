@@ -35,10 +35,14 @@ class Perceptron:
     def activate(excitations):
         return np.where(excitations == 0, 1, np.sign(excitations))
 
+    @staticmethod
+    def derivative_activation(value):
+        return 1
+
     def predict(self, x):
         # Calculate the excitations, including the bias as part of weights
         excitations = np.dot(x, self.weights)
-        return self.activate(excitations)
+        return excitations
 
     def calculate_error(self, x, y):
         predictions = self.predict(x)
@@ -54,22 +58,24 @@ class Perceptron:
 
         iteration = 0
         while min_error >= self.error_limit and iteration < self.max_iterations:
-            ix = np.random.randint(0, n_samples)  # Randomly select an index
-            activation = self.predict(x[ix])
+            for ix in range(len(x)):
+                weighted_sum = self.predict(x[ix])
+                
+                activation = self.activate(weighted_sum)
 
-            # Update weights
-            delta_w = self.learning_rate * (y[ix] - activation) * x[ix]
-            self.weights += delta_w
-            
-            #De-normalize inputs and expected output
-            denorm_y = denormalize_output(y, np.min(y), np.max(y))
-            denorm_x = denormalize_output(x, np.min(x), np.max(x))
-            # Calculate the current error
-            error = self.calculate_error(denorm_x, denorm_y)
-            errors.append(error)
+                # Update weights
+                delta_w = self.learning_rate * (y[ix] - activation) * x[ix] * self.derivative_activation(weighted_sum)
+                self.weights += delta_w
+                
+                #De-normalize inputs and expected output
+                denorm_y = denormalize_output(y, np.min(y), np.max(y))
+                denorm_x = denormalize_output(x, np.min(x), np.max(x))
+                # Calculate the current error
+                error = self.calculate_error(denorm_x, denorm_y)
+                errors.append(error)
 
-            # Update minimum error if needed
-            min_error = min(min_error, error)
+                # Update minimum error if needed
+                min_error = min(min_error, error)
 
             iteration += 1
 

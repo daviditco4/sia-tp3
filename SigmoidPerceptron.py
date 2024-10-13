@@ -43,11 +43,20 @@ class SigmoidPerceptron(Perceptron):
 
     @staticmethod
     def activate(excitations):
-        return 1 / (1 + np.exp(-0.5*excitations))
+        return 1 / (1 + np.exp(-excitations))
+    
+    @staticmethod
+    def derivative_activation(value):
+        result_log = 1 / (1 + np.exp(-value))
+        result_log_f = result_log * (1-result_log)
+        result_log_f = result_log_f * 2
+        result_tanh = 1 - (np.tanh(value) ** 2)
+        result_tanh_f = result_tanh * 1
+        return result_log_f
 
     def calculate_error(self, x, y):
         predictions = self.predict(x)
-        return 0.5 * np.sum((y - predictions) ** 2)  # Almost Sum of Squared Errors
+        return (1/len(predictions)) * np.sum((y - predictions) ** 2)  # Almost Sum of Squared Errors
 
 
 # Example usage
