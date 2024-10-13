@@ -18,7 +18,7 @@ def min_max_normalize_output(y):
 def denormalize_output(y_norm, y_min, y_max):
     return ((y_norm + 1)/2) * (y_max - y_min + 1e-8) + y_min
 
-
+#task1
 class Perceptron:
     def __init__(self, learning_rate=0.1, error_limit=1, max_iterations=1000):
         self.learning_rate = learning_rate
@@ -39,8 +39,13 @@ class Perceptron:
     def derivative_activation(value):
         return 1
 
-    def predict(self, x):
+    #def predict(self, x):
         # Calculate the excitations, including the bias as part of weights
+     #   excitations = np.dot(x, self.weights)
+     #   return self.activate(excitations)
+    
+    def predict(self, x):
+    # Calculate the excitations, including the bias as part of weights
         excitations = np.dot(x, self.weights)
         return excitations
 
@@ -59,6 +64,7 @@ class Perceptron:
         iteration = 0
         while min_error >= self.error_limit and iteration < self.max_iterations:
             for ix in range(len(x)):
+                #
                 weighted_sum = self.predict(x[ix])
                 
                 activation = self.activate(weighted_sum)
