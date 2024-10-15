@@ -1,12 +1,15 @@
+import random
+
 import numpy as np
 
 
 class Perceptron:
-    def __init__(self, layer_sizes, beta=1, learning_rate=0.1, momentum=0):
+    def __init__(self, layer_sizes, beta=1, learning_rate=0.1, momentum=0.0, weights_updates_by_epoch=False):
         self.layer_sizes = layer_sizes  # List defining the number of neurons per layer
         self.beta = beta
         self.learning_rate = learning_rate
         self.momentum = momentum
+        self.weights_updates_by_epoch = weights_updates_by_epoch
         self.weights = None
         self.prev_weight_updates = None
 
@@ -24,7 +27,7 @@ class Perceptron:
         weights = []
         for i in range(len(self.layer_sizes) - 1):
             # Initialize weights randomly in the range [-1, 1]
-            w = np.random.rand(self.layer_sizes[i], self.layer_sizes[i + 1]) * 2 - 1
+            w = np.random.randn(self.layer_sizes[i], self.layer_sizes[i + 1]) / 3
             weights.append(w)
         print('INITIAL:', weights)
         self.weights = weights
@@ -70,39 +73,68 @@ class Perceptron:
         return 0.5 * np.sum((y_true - y_pred) ** 2)
 
     # Train the perceptron using stochastic gradient descent
-    def train(self, x, y, max_iterations, error_limit):
+    def train(self, x, y, epoch_limit, error_limit):
         self.initialize_weights()
+        weight_updates = [0] * len(self.weights)
         min_error = np.inf  # Initialize minimum error
         best_weights = None  # To store the best weights
-        iteration = 0
+        training_done = False
+        epoch = 0
 
-        while min_error >= error_limit and iteration < max_iterations:
-            # Randomly select a sample for SGD
-            sample_idx = np.random.randint(0, x.shape[0])
-            x_sample = x[sample_idx:sample_idx + 1]
-            y_sample = y[sample_idx:sample_idx + 1]
+        while not training_done and epoch < epoch_limit:
+            indexes_shuffled = list(range(len(x)))
+            random.shuffle(indexes_shuffled)
 
-            # Forward pass
-            activations, excitations = self.forward_propagation(x_sample)
+            for sample_idx in indexes_shuffled:
+                x_sample = x[sample_idx:sample_idx + 1]
+                y_sample = y[sample_idx:sample_idx + 1]
 
-            # Backpropagation and weight updates
-            weight_updates = self.back_propagation(y_sample, activations, excitations)
-            for i in range(len(self.weights)):
-                self.weights[i] += weight_updates[i]
+                # Forward pass
+                activations, excitations = self.forward_propagation(x_sample)
 
-            # Compute error across the whole dataset
-            predictions, _ = self.forward_propagation(x)
-            error = self.compute_error(y, predictions[-1])
+                # Backpropagation and weight updates
+                weight_updates_aux = self.back_propagation(y_sample, activations, excitations)
+                for i in range(len(self.weights)):
+                    if not self.weights_updates_by_epoch:
+                        self.weights[i] += weight_updates_aux[i]
+                    else:
+                        weight_updates[i] += weight_updates_aux[i]
 
-            # Update the minimum error and best weights if the current error is lower
-            if error < min_error:
-                min_error = error
-                best_weights = [w.copy() for w in self.weights]  # Store the best weights
+                if not self.weights_updates_by_epoch:
+                    # Compute error across the whole dataset
+                    predictions, _ = self.forward_propagation(x)
+                    error = self.compute_error(y, predictions[-1])
 
-            iteration += 1
+                    # Update the minimum error and best weights if the current error is lower
+                    if error < min_error:
+                        print(error)
+                        min_error = error
+                        best_weights = [w.copy() for w in self.weights]  # Store the best weights
+                        if min_error < error_limit:
+                            training_done = True
+                            break
 
-        print(iteration)
-        return best_weights, min_error, iteration
+            if self.weights_updates_by_epoch:
+                # Weight updates
+                for i in range(len(self.weights)):
+                    self.weights[i] += weight_updates[i]
+                weight_updates = [0] * len(self.weights)
+
+                # Compute error across the whole dataset
+                predictions, _ = self.forward_propagation(x)
+                error = self.compute_error(y, predictions[-1])
+
+                # Update the minimum error and best weights if the current error is lower
+                if error < min_error:
+                    print(error)
+                    min_error = error
+                    best_weights = [w.copy() for w in self.weights]  # Store the best weights
+                    if min_error < error_limit:
+                        break
+            epoch += 1
+
+        print(epoch)
+        return best_weights, min_error, epoch
 
     # Predict output for given input X
     def predict(self, x):
@@ -117,13 +149,14 @@ if __name__ == "__main__":
     Y = np.array([[0], [1], [1], [0]])  # Expected outputs
 
     # Instantiate the Perceptron class
-    mlp = Perceptron([2, 4, 1], beta=3, learning_rate=0.1)
+    mlp = Perceptron([2, 4, 1], learning_rate=0.6, momentum=0.9, weights_updates_by_epoch=False)
 
     # Train the MLP
-    trained_weights, err = mlp.train(X, Y, 100000, 0.1)
+    trained_weights, err, epochs = mlp.train(X, Y, np.inf, 0.005)
 
     print("Trained weights:", trained_weights)
     print("Minimum error:", err)
+    print("Epoch reached:", epochs)
 
     # Testing the trained network on the XOR problem
     prediction = mlp.predict(X)
