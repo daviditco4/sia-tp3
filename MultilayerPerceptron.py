@@ -4,12 +4,12 @@ import numpy as np
 
 
 class Perceptron:
-    def __init__(self, layer_sizes, beta=1, learning_rate=0.1, momentum=0.0, weights_updates_by_epoch=False):
+    def __init__(self, layer_sizes, beta=1, learning_rate=0.001, momentum=0.0, weight_updates_by_epoch=False):
         self.layer_sizes = layer_sizes  # List defining the number of neurons per layer
         self.beta = beta
         self.learning_rate = learning_rate
         self.momentum = momentum
-        self.weights_updates_by_epoch = weights_updates_by_epoch
+        self.weight_updates_by_epoch = weight_updates_by_epoch
         self.weights = None
         self.prev_weight_updates = None
 
@@ -46,10 +46,19 @@ class Perceptron:
 
         return activations, excitations
 
+    def update_weights(self, weight_gradients):
+        weight_updates = [None] * len(self.weights)
+
+        for i in range(len(self.weights)):
+            weight_updates[i] = -self.learning_rate * weight_gradients[i] + self.momentum * self.prev_weight_updates[i]
+            self.prev_weight_updates[i] = weight_updates[i]
+
+        return weight_updates
+
     # Backpropagation for multiple layers
     def back_propagation(self, y_true, activations, excitations):
         errors = [None] * len(self.weights)  # Initialize error list
-        weight_updates = [None] * len(self.weights)
+        weight_gradients = [None] * len(self.weights)
 
         # Error at the output layer (last layer)
         output_error = (y_true - activations[-1]) * self.sigmoid_derivative(excitations[-1])
@@ -59,13 +68,11 @@ class Perceptron:
         for i in reversed(range(len(self.weights) - 1)):
             errors[i] = np.dot(errors[i + 1], self.weights[i + 1].T) * self.sigmoid_derivative(excitations[i])
 
-        # Calculate weight updates
+        # Calculate weight gradients
         for i in range(len(self.weights)):
-            weight_updates[i] = self.learning_rate * np.dot(activations[i].T, errors[i]) + self.momentum * \
-                                self.prev_weight_updates[i]
-            self.prev_weight_updates[i] = weight_updates[i]
+            weight_gradients[i] = -np.dot(activations[i].T, errors[i])  # TODO: Evaluate if the assignment should be negative
 
-        return weight_updates
+        return weight_gradients
 
     # Sort of compute sum of squared errors
     @staticmethod
@@ -75,7 +82,7 @@ class Perceptron:
     # Train the perceptron using stochastic gradient descent
     def train(self, x, y, epoch_limit, error_limit):
         self.initialize_weights()
-        weight_updates = [0] * len(self.weights)
+        weight_updates = [np.zeros_like(w) for w in self.weights]
         min_error = np.inf  # Initialize minimum error
         best_weights = None  # To store the best weights
         training_done = False
@@ -93,14 +100,15 @@ class Perceptron:
                 activations, excitations = self.forward_propagation(x_sample)
 
                 # Backpropagation and weight updates
-                weight_updates_aux = self.back_propagation(y_sample, activations, excitations)
+                weight_gradients = self.back_propagation(y_sample, activations, excitations)
+                weight_updates_aux = self.update_weights(weight_gradients)
                 for i in range(len(self.weights)):
-                    if not self.weights_updates_by_epoch:
+                    if not self.weight_updates_by_epoch:
                         self.weights[i] += weight_updates_aux[i]
                     else:
                         weight_updates[i] += weight_updates_aux[i]
 
-                if not self.weights_updates_by_epoch:
+                if not self.weight_updates_by_epoch:
                     # Compute error across the whole dataset
                     predictions, _ = self.forward_propagation(x)
                     error = self.compute_error(y, predictions[-1])
@@ -114,7 +122,7 @@ class Perceptron:
                             training_done = True
                             break
 
-            if self.weights_updates_by_epoch:
+            if self.weight_updates_by_epoch:
                 # Weight updates
                 for i in range(len(self.weights)):
                     self.weights[i] += weight_updates[i]
@@ -149,7 +157,7 @@ if __name__ == "__main__":
     Y = np.array([[0], [1], [1], [0]])  # Expected outputs
 
     # Instantiate the Perceptron class
-    mlp = Perceptron([2, 4, 1], learning_rate=0.6, momentum=0.9, weights_updates_by_epoch=False)
+    mlp = Perceptron([2, 4, 1], learning_rate=0.6, momentum=0.9, weight_updates_by_epoch=False)
 
     # Train the MLP
     trained_weights, err, epochs = mlp.train(X, Y, np.inf, 0.005)
