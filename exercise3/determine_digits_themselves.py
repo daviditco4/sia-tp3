@@ -108,4 +108,4 @@ if __name__ == "__main__":
     # Append results to CSV
     append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, iterations, training_accuracy, testing_accuracy)
 
-    print(f"Training completed in {elapsed_time:.2f} seconds with {training_accuracy * 100:.2f}% training accuracy.")
+    print(f"Training completed in {elapsed_time:.2f} seconds with {training_accuracy * 100:.2f}% training accuracy")
