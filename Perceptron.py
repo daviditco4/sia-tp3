@@ -12,11 +12,11 @@ def min_max_normalize_output(y):
     y_min = np.min(y)
     y_max = np.max(y)
     epsilon = 1e-8
-    return 2*((y - y_min) / (y_max - y_min + epsilon))-1, y_min, y_max
+    return ((y - y_min) / (y_max - y_min + epsilon)), y_min, y_max
 
 # Function to denormalize output back to original scale (useful for regression tasks)
 def denormalize_output(y_norm, y_min, y_max):
-    return ((y_norm + 1)/2) * (y_max - y_min + 1e-8) + y_min
+    return ((y_norm) * (y_max - y_min + 1e-8)) + y_min
 
 #task1
 class Perceptron:
