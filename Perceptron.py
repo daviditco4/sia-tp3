@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import root_mean_squared_error
 
 def min_max_normalize(X):
         X_min = np.min(X, axis=0)
@@ -7,7 +8,6 @@ def min_max_normalize(X):
         epsilon = 1e-8
         return 2*((X - X_min) / (X_max - X_min + epsilon))-1, X_min, X_max
     
-# Function to normalize output data (optional, but typically binary 0/1)
 def min_max_normalize_output(y):
     y_min = np.min(y)
     y_max = np.max(y)
@@ -64,9 +64,10 @@ class Perceptron:
         iteration = 0
         while min_error >= self.error_limit and iteration < self.max_iterations:
             for ix in range(len(x)):
-                #
+                #Weigthed sum of inputs and weights
                 weighted_sum = self.predict(x[ix])
                 
+                #Activation of the weighted sum
                 activation = self.activate(weighted_sum)
 
                 # Update weights
@@ -76,6 +77,7 @@ class Perceptron:
                 #De-normalize inputs and expected output
                 denorm_y = denormalize_output(y, np.min(y), np.max(y))
                 denorm_x = denormalize_output(x, np.min(x), np.max(x))
+                
                 # Calculate the current error
                 error = self.calculate_error(denorm_x, denorm_y)
                 errors.append(error)
@@ -84,8 +86,72 @@ class Perceptron:
                 min_error = min(min_error, error)
 
             iteration += 1
+            
+            #Predict with test data and give error
 
         return self.weights, iteration, errors
+
+    def fit_v2(self, x, y, test_x, test_y, min_a, max_a):
+        n_samples, n_features = x.shape
+        self.initialize_weights(n_features)
+
+        tr_errors = []
+        tt_errors = []
+        min_error = np.inf
+
+        iteration = 0
+        while min_error >= self.error_limit and iteration < self.max_iterations:
+            training_set_errors = []
+            for ix in range(len(x)):
+                #Weigthed sum of inputs and weights
+                weighted_sum = self.predict(x[ix])
+                
+                #Activation of the weighted sum
+                activation = self.activate(weighted_sum)
+
+                # Update weights
+                delta_w = self.learning_rate * (y[ix] - activation) * x[ix] * self.derivative_activation(weighted_sum)
+                self.weights += delta_w
+                
+                #Calculating error of this training example
+                #weighted_sum2 = self.predict(x[ix])
+                #y_pred = self.activate(weighted_sum2)
+                
+                #De-normalize predicted and expected output
+                #denorm_y = denormalize_output(y[ix], min_a, max_a)
+                #denorm_y_pred = denormalize_output(y_pred, min_a, max_a)
+                
+                # Calculate the error of this training example
+                #error = (denorm_y - denorm_y_pred) ** 2
+                #training_set_errors.append(error)
+                
+            iteration += 1
+            
+            #avg_ts_error = (sum(training_set_errors) / len(training_set_errors))
+            #tr_errors.append(avg_ts_error)
+            
+            weigthed_sum_full_tr = self.predict(x)
+            train_y_predict = self.activate(weigthed_sum_full_tr)
+            
+            denorm_Y_pred = denormalize_output(train_y_predict, min_a, max_a)
+            denorm_Y = denormalize_output(y, min_a, max_a)
+            
+            y_train_error = root_mean_squared_error(denorm_Y, denorm_Y_pred)
+            tr_errors.append(y_train_error)
+            
+            #Predict with test data and give error
+            weighted_sum_test = self.predict(test_x)
+            y_pred_test = self.activate(weighted_sum_test)
+            
+            #De-normalize predicted and expected output
+            denorm_y_t = denormalize_output(test_y, min_a, max_a)
+            denorm_y_pred_t = denormalize_output(y_pred_test, min_a, max_a)
+            
+            y_test_error = root_mean_squared_error(denorm_y_t, denorm_y_pred_t)
+            tt_errors.append(y_test_error)
+
+        return tr_errors, tt_errors
+
 
 
 # Example usage
