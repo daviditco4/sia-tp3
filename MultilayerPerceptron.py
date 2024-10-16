@@ -72,14 +72,15 @@ class Perceptron:
 
         # Calculate weight gradients
         for i in range(len(self.weights)):
-            weight_gradients[i] = -np.dot(activations[i].T, errors[i])  # TODO: Evaluate if the assignment should be negative
+            weight_gradients[i] = -np.dot(activations[i].T,
+                                          errors[i])  # TODO: Evaluate if the assignment should be negative
 
         return weight_gradients
 
-    # Sort of compute sum of squared errors
+    # Compute mean squared error
     @staticmethod
     def compute_error(y_true, y_pred):
-        return 0.5 * np.sum((y_true - y_pred) ** 2)
+        return np.mean((y_true - y_pred) ** 2)
 
     # Train the perceptron using gradient descent
     def train(self, x, y, epoch_limit, error_limit):
@@ -90,6 +91,7 @@ class Perceptron:
         training_done = False
         epoch = 0
         weight_history = []
+        error_history = []
 
         while not training_done and epoch < epoch_limit:
             indexes_shuffled = list(range(len(x)))
@@ -125,19 +127,21 @@ class Perceptron:
                             training_done = True
                             break
 
-            epoch += 1
-            weight_history.append([w + wu for w, wu in zip(self.weights, weight_updates)])
-
+            # Weight updates
             if self.weight_updates_by_epoch:
-                # Weight updates
                 for i in range(len(self.weights)):
                     self.weights[i] += weight_updates[i]
                 weight_updates = [0] * len(self.weights)
 
-                # Compute error across the whole dataset
-                predictions, _ = self.forward_propagation(x)
-                error = self.compute_error(y, predictions[-1])
+            # Compute error across the whole dataset
+            predictions, _ = self.forward_propagation(x)
+            error = self.compute_error(y, predictions[-1])
 
+            epoch += 1
+            weight_history.append([w + wu for w, wu in zip(self.weights, weight_updates)])
+            error_history.append(error)
+
+            if self.weight_updates_by_epoch:
                 # Update the minimum error and best weights if the current error is lower
                 if error < min_error:
                     print(error)
@@ -147,7 +151,8 @@ class Perceptron:
                         break
 
         print(epoch)
-        return best_weights, min_error, epoch, weight_history
+        return best_weights, min_error, epoch, weight_history, error_history
+
 
     # Predict output for given input X
     def predict(self, x, weights=None):

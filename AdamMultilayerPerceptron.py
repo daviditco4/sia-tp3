@@ -15,7 +15,8 @@ class AdamMultilayerPerceptron(Perceptron):
 
     def initialize_weights(self):
         super().initialize_weights()
-        # Initialize Adam parameters (moving averages of gradients and squared gradients)
+        # Initialize Adam parameters (correction, moving averages of gradients and squared gradients)
+        self.t = 1
         self.m_weights = [np.zeros_like(w) for w in self.weights]
         self.v_weights = [np.zeros_like(w) for w in self.weights]
 

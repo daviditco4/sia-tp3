@@ -39,8 +39,8 @@ def train_perceptron(digits, labels, hyperparameters):
                      momentum=hyperparameters["momentum"] if 'momentum' in hyperparameters else 0)
 
     # Train the perceptron
-    best_weights, min_error, iterations, weight_history = mlp.train(digits, labels, epoch_limit=50000,
+    best_weights, min_error, iterations, weight_history, error_history = mlp.train(digits, labels, epoch_limit=50000,
                                                     error_limit=hyperparameters["error_limit"])
 
     print(min_error)
-    return mlp, iterations, weight_history
+    return mlp, iterations, weight_history, error_history
