@@ -29,7 +29,6 @@ class Perceptron:
             # Initialize weights randomly in the range [-1, 1]
             w = np.random.randn(self.layer_sizes[i], self.layer_sizes[i + 1]) / 3
             weights.append(w)
-        print('INITIAL:', weights)
         self.weights = weights
         self.prev_weight_updates = [np.zeros_like(w) for w in self.weights]
 
@@ -120,7 +119,6 @@ class Perceptron:
 
                     # Update the minimum error and best weights if the current error is lower
                     if error < min_error:
-                        print(error)
                         min_error = error
                         best_weights = [w.copy() for w in self.weights]  # Store the best weights
                         if min_error < error_limit:
@@ -144,13 +142,11 @@ class Perceptron:
             if self.weight_updates_by_epoch:
                 # Update the minimum error and best weights if the current error is lower
                 if error < min_error:
-                    print(error)
                     min_error = error
                     best_weights = [w.copy() for w in self.weights]  # Store the best weights
                     if min_error < error_limit:
                         break
 
-        print(epoch)
         return best_weights, min_error, epoch, weight_history, error_history
 
 

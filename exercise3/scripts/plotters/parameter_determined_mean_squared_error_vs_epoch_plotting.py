@@ -57,5 +57,7 @@ if __name__ == "__main__":
     plt.grid(True)
 
     # Save the plot
-    plt.savefig("parameter_determined_mean_squared_error_vs_epoch_plot.png", dpi=300, bbox_inches='tight')
+    plt.savefig(
+        f"even_or_odd_{varying_hyperparam.lower().replace(" ", "_")}_determined_mean_squared_error_vs_epoch_plot.png",
+        dpi=300, bbox_inches='tight')
     plt.close()
