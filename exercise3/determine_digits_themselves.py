@@ -11,8 +11,7 @@ from utils import read_digits_from_txt, read_hyperparameters_from_json, train_pe
 
 def generate_labels_for_digits(num_digits=10):
     """ Create one-hot encoded labels for digits 0-9 """
-    lbls = np.eye(num_digits)
-    return lbls
+    return np.eye(num_digits)
 
 
 def apply_noise_to_bitmaps(bitmaps, noise_level):
@@ -40,8 +39,8 @@ def apply_noise_to_bitmaps(bitmaps, noise_level):
 def test_perceptron(p, dgts):
     accuracies = {}
 
-    for i in range(1, 9):
-        noise_level = i * 0.05
+    for i in range(10):
+        noise_level = (i + 1) * 0.05
         noisy_digits = apply_noise_to_bitmaps(dgts, noise_level)
         preds = p.predict(noisy_digits)
         pred_labels = np.argmax(preds, axis=1)
