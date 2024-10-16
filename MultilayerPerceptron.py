@@ -34,12 +34,14 @@ class Perceptron:
         self.prev_weight_updates = [np.zeros_like(w) for w in self.weights]
 
     # Forward propagation with returning activations and excitations (weighted sums)
-    def forward_propagation(self, x):
+    def forward_propagation(self, x, weights=None):
+        if weights is None:
+            weights = self.weights
         activations = [x]  # Store activations for each layer
         excitations = []  # Store weighted sums for each layer (before activation)
 
-        for i in range(len(self.weights)):
-            net_input = np.dot(activations[-1], self.weights[i])  # Weighted sum (excitation)
+        for i in range(len(weights)):
+            net_input = np.dot(activations[-1], weights[i])  # Weighted sum (excitation)
             excitations.append(net_input)
             activation = self.sigmoid(net_input)  # Apply activation function (sigmoid)
             activations.append(activation)
@@ -79,7 +81,7 @@ class Perceptron:
     def compute_error(y_true, y_pred):
         return 0.5 * np.sum((y_true - y_pred) ** 2)
 
-    # Train the perceptron using stochastic gradient descent
+    # Train the perceptron using gradient descent
     def train(self, x, y, epoch_limit, error_limit):
         self.initialize_weights()
         weight_updates = [np.zeros_like(w) for w in self.weights]
@@ -87,6 +89,7 @@ class Perceptron:
         best_weights = None  # To store the best weights
         training_done = False
         epoch = 0
+        weight_history = []
 
         while not training_done and epoch < epoch_limit:
             indexes_shuffled = list(range(len(x)))
@@ -122,6 +125,9 @@ class Perceptron:
                             training_done = True
                             break
 
+            epoch += 1
+            weight_history.append([w + wu for w, wu in zip(self.weights, weight_updates)])
+
             if self.weight_updates_by_epoch:
                 # Weight updates
                 for i in range(len(self.weights)):
@@ -139,14 +145,13 @@ class Perceptron:
                     best_weights = [w.copy() for w in self.weights]  # Store the best weights
                     if min_error < error_limit:
                         break
-            epoch += 1
 
         print(epoch)
-        return best_weights, min_error, epoch
+        return best_weights, min_error, epoch, weight_history
 
     # Predict output for given input X
-    def predict(self, x):
-        activations, _ = self.forward_propagation(x)
+    def predict(self, x, weights=None):
+        activations, _ = self.forward_propagation(x, weights)
         return activations[-1]  # Return the output from the last layer
 
 

@@ -36,19 +36,33 @@ def apply_noise_to_bitmaps(bitmaps, noise_level):
     return noisy_bitmaps
 
 
+def _test_perceptron(p, dgts, noise_level=0.0, weights=None):
+    noisy_digits = apply_noise_to_bitmaps(dgts, noise_level)
+    predictions = p.predict(noisy_digits, weights)
+    predicted_labels = np.argmax(predictions, axis=1)
+    lbls = np.argmax(generate_labels_for_digits(), axis=1)
+    return np.mean(predicted_labels == lbls)
+
+
 def test_perceptron(p, dgts):
     accuracies = {}
-
     for i in range(10):
         noise_level = (i + 1) * 0.05
-        noisy_digits = apply_noise_to_bitmaps(dgts, noise_level)
-        preds = p.predict(noisy_digits)
-        pred_labels = np.argmax(preds, axis=1)
-        lbls = np.argmax(generate_labels_for_digits(), axis=1)
-        accu = np.mean(pred_labels == lbls)
-        accuracies[f"{noise_level:.2f}"] = accu
-
+        accuracy = _test_perceptron(p, dgts, noise_level)
+        accuracies[f"{noise_level:.2f}"] = accuracy
     return accuracies
+
+
+def train_test_perceptron(p, dgts, weight_hist, noise_level=0.1):
+    train_accus = []
+    test_accus = []
+    for weights in weight_hist:
+        train_accus.append(_test_perceptron(p, dgts, weights=weights))
+        training_accuracy = 0
+        for i in range(4):
+            training_accuracy += _test_perceptron(p, dgts, noise_level, weights)
+        test_accus.append(training_accuracy / 4)
+    return train_accus, test_accus
 
 
 def append_results_to_csv(file_path, elap_time, hyperparams, iters, train_accu, test_accu):
@@ -91,20 +105,15 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # Train the perceptron
-    mlp, iterations = train_perceptron(digits, labels, hyperparameters)
+    mlp, iterations, weight_history = train_perceptron(digits, labels, hyperparameters)
 
     # Calculate elapsed time
     elapsed_time = time.time() - start_time
 
-    # Predict on the training set to calculate accuracy
-    predictions = mlp.predict(digits)
-    predicted_labels = np.argmax(predictions, axis=1)  # Convert outputs back to digit labels
-    true_labels = np.argmax(labels, axis=1)
-
-    training_accuracy = np.mean(predicted_labels == true_labels)
-    testing_accuracy = test_perceptron(mlp, digits)
+    training_accuracies, testing_accuracies = train_test_perceptron(mlp, digits, weight_history)
 
     # Append results to CSV
-    append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, iterations, training_accuracy, testing_accuracy)
+    append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, iterations, training_accuracies,
+                          testing_accuracies)
 
-    print(f"Training completed in {elapsed_time:.2f} seconds with {training_accuracy * 100:.2f}% training accuracy")
+    print(f"Training completed in {elapsed_time:.2f} seconds with {training_accuracies[-1] * 100:.2f}% training accuracy")
