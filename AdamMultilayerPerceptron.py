@@ -4,7 +4,7 @@ from MultilayerPerceptron import Perceptron
 
 
 class AdamMultilayerPerceptron(Perceptron):
-    def __init__(self, layer_sizes, beta=1, learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8, weight_updates_by_epoch=False):
+    def __init__(self, layer_sizes, beta=1.0, learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8, weight_updates_by_epoch=False):
         super().__init__(layer_sizes, beta, learning_rate, 0.0, weight_updates_by_epoch)
         self.beta1 = beta1
         self.beta2 = beta2
