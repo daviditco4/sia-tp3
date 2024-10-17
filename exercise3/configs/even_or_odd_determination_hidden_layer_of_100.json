@@ -1,11 +1,12 @@
 {
   "layer_sizes": [
     35,
+    100,
     1
   ],
   "beta": 1.0,
   "learning_rate": 0.1,
   "momentum": 0.0,
   "error_limit": 0.005,
-  "optimizer": "none"
+  "optimizer": "none_and_hidden_layer"
 }

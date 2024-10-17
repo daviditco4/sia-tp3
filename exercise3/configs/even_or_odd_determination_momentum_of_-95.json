@@ -3,9 +3,9 @@
     35,
     1
   ],
-  "beta": 1.0,
+  "beta": 1,
   "learning_rate": 0.1,
-  "momentum": 0.0,
+  "momentum": 0.95,
   "error_limit": 0.005,
-  "optimizer": "none"
+  "optimizer": "momentum"
 }

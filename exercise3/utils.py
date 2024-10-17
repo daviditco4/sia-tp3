@@ -37,7 +37,7 @@ def train_perceptron(digits, labels, hyperparameters):
     if "adam" in hyperparameters["optimizer"]:
         # Initialize perceptron using the hyperparameters
         mlp = AdamMultilayerPerceptron(hyperparameters["layer_sizes"], beta=hyperparameters["beta"],
-                         learning_rate=hyperparameters["learning_rate"])
+                                       learning_rate=hyperparameters["learning_rate"])
     else:
         # Initialize perceptron using the hyperparameters
         mlp = Perceptron(hyperparameters["layer_sizes"], beta=hyperparameters["beta"],
@@ -46,7 +46,8 @@ def train_perceptron(digits, labels, hyperparameters):
 
     # Train the perceptron
     best_weights, min_error, iterations, weight_history, error_history = mlp.train(digits, labels, epoch_limit=2500,
-                                                    error_limit=hyperparameters["error_limit"])
+                                                                                   error_limit=hyperparameters[
+                                                                                       "error_limit"])
 
     print(min_error)
     return mlp, iterations, weight_history, error_history

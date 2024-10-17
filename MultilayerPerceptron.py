@@ -149,7 +149,6 @@ class Perceptron:
 
         return best_weights, min_error, epoch, weight_history, error_history
 
-
     # Predict output for given input X
     def predict(self, x, weights=None):
         activations, _ = self.forward_propagation(x, weights)
