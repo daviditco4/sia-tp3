@@ -35,10 +35,10 @@ if __name__ == "__main__":
         all_training_accuracies = []
         all_testing_accuracies = []
 
-        # Collect all accuracies and pad shorter lists with NaN to handle lists of different lengths
+        # Collect all accuracies and pad shorter lists with 1.0 to handle lists of different lengths
         for train_acc, test_acc in zip(subset['Training Accuracy'], subset['Testing Accuracy']):
-            padded_train_acc = train_acc + [np.nan] * (max_epochs - len(train_acc))
-            padded_test_acc = test_acc + [np.nan] * (max_epochs - len(test_acc))
+            padded_train_acc = train_acc + [1.0] * (max_epochs - len(train_acc))
+            padded_test_acc = test_acc + [1.0] * (max_epochs - len(test_acc))
 
             all_training_accuracies.append(padded_train_acc)
             all_testing_accuracies.append(padded_test_acc)
@@ -46,12 +46,12 @@ if __name__ == "__main__":
         all_training_accuracies = np.array(all_training_accuracies)
         all_testing_accuracies = np.array(all_testing_accuracies)
 
-        # Compute mean and std for training and testing accuracy, ignoring NaN values
-        train_acc_means = np.nanmean(all_training_accuracies, axis=0)
-        train_acc_stds = np.nanstd(all_training_accuracies, axis=0)
+        # Compute mean and std for training and testing accuracy
+        train_acc_means = np.mean(all_training_accuracies, axis=0)
+        train_acc_stds = np.std(all_training_accuracies, axis=0)
 
-        test_acc_means = np.nanmean(all_testing_accuracies, axis=0)
-        test_acc_stds = np.nanstd(all_testing_accuracies, axis=0)
+        test_acc_means = np.mean(all_testing_accuracies, axis=0)
+        test_acc_stds = np.std(all_testing_accuracies, axis=0)
 
         # Generate epoch indices (1-based)
         epochs = np.arange(1, max_epochs + 1)
@@ -60,9 +60,9 @@ if __name__ == "__main__":
         plt.plot(epochs, train_acc_means, label=f'Training - {varying_hyperparam}: {val}')
         plt.fill_between(epochs, train_acc_means - train_acc_stds, train_acc_means + train_acc_stds, alpha=0.2)
 
-        # # Plot Testing Accuracy mean and std shadow for this hyperparameter value
-        # plt.plot(epochs, test_acc_means, label=f'Testing - {varying_hyperparam}: {val}')
-        # plt.fill_between(epochs, test_acc_means - test_acc_stds, test_acc_means + test_acc_stds, alpha=0.2)
+        # Plot Testing Accuracy mean and std shadow for this hyperparameter value
+        plt.plot(epochs, test_acc_means, label=f'Testing - {varying_hyperparam}: {val}')
+        plt.fill_between(epochs, test_acc_means - test_acc_stds, test_acc_means + test_acc_stds, alpha=0.2)
 
     # Limit X-axis to 2500 epochs
     plt.xlim([1, 2500])
@@ -70,12 +70,12 @@ if __name__ == "__main__":
     # Add labels, title, and legend
     plt.xlabel('Epochs')
     plt.ylabel('Accuracy')
-    plt.title(f'Training Accuracy for varying {varying_hyperparam}') # (f'Training and Testing Accuracy for varying {varying_hyperparam}')
+    plt.title(f'Training and Testing Accuracy for varying {varying_hyperparam}')
     plt.legend()
     plt.grid(True)
 
     # Save the plot
     plt.savefig(
-        f"digits_themselves_{varying_hyperparam.lower().replace(" ", "_")}_determined_training_accuracy_vs_epoch_plot.png",
+        f"digits_themselves_{varying_hyperparam.lower().replace(" ", "_")}_determined_training_testing_accuracy_vs_epoch_plot.png",
         dpi=300, bbox_inches='tight')
     plt.close()
