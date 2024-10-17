@@ -124,22 +124,9 @@ class Perceptron:
                 delta_w = self.learning_rate * (y[ix] - activation) * x[ix] * self.derivative_activation(weighted_sum)
                 self.weights += delta_w
                 
-                #Calculating error of this training example
-                #weighted_sum2 = self.predict(x[ix])
-                #y_pred = self.activate(weighted_sum2)
-                
-                #De-normalize predicted and expected output
-                #denorm_y = denormalize_output(y[ix], min_a, max_a)
-                #denorm_y_pred = denormalize_output(y_pred, min_a, max_a)
-                
-                # Calculate the error of this training example
-                #error = (denorm_y - denorm_y_pred) ** 2
-                #training_set_errors.append(error)
-                
-            iteration += 1
+            #Change de denormalize_output for the sigmoid one when testing sigmoid function
             
-            #avg_ts_error = (sum(training_set_errors) / len(training_set_errors))
-            #tr_errors.append(avg_ts_error)
+            iteration += 1
             
             weigthed_sum_full_tr = self.predict(x)
             train_y_predict = self.activate(weigthed_sum_full_tr)

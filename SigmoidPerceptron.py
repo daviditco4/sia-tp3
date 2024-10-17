@@ -80,7 +80,7 @@ class SigmoidPerceptron(Perceptron):
 
     @staticmethod
     def activate(excitations):
-        return np.tanh(excitations)
+        return np.tanh(excitations)  #change to 1 / 1 + np.exp(-excitations) for sigmoid
     
     @staticmethod
     def derivative_activation(value):
@@ -89,7 +89,7 @@ class SigmoidPerceptron(Perceptron):
         result_log_f = result_log_f * 1
         result_tanh = 1 - (np.tanh(value) ** 2)
         result_tanh_f = result_tanh * 1
-        return result_tanh_f
+        return result_tanh_f # Change to result_log_f for sigmoid
 
     def calculate_error(self, x, y):
         predictions = self.predict(x)
@@ -105,6 +105,7 @@ if __name__ == "__main__":
     X = df.to_numpy()
 
     #Normalize inputs and expected outputs
+    #Change normalize function for sigmoid one when testing sigmoid function
     norm_X, min_x, max_x = min_max_normalize_output(X)
     print(norm_X)
 
