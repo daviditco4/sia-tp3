@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import root_mean_squared_error
 
 def min_max_normalize_sigmoid(X):
-        X_min = np.min(X)
-        X_max = np.max(X)
-        epsilon = 1e-8
-        return ((X - X_min) / (X_max - X_min + epsilon)), X_min, X_max
-    
+    X_min = np.min(X)
+    X_max = np.max(X)
+    epsilon = 1e-8
+    return ((X - X_min) / (X_max - X_min + epsilon)), X_min, X_max
+
 def min_max_normalize_output(y):
     y_min = np.min(y)
     y_max = np.max(y)
@@ -199,6 +199,3 @@ if __name__ == "__main__":
     # Show the plot
     plt.tight_layout()
     plt.show()
-    
-    
-    

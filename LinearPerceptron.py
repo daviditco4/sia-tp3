@@ -5,7 +5,7 @@ import math
 import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score, KFold
 
-from Perceptron import Perceptron, min_max_normalize, min_max_normalize_output
+from Perceptron import Perceptron, min_max_normalize_sigmoid, min_max_normalize_output
 
 
 def getErrorAveragesandStd(learning_rate):
