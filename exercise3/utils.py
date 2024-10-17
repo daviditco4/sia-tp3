@@ -8,6 +8,7 @@ import numpy as np
 sys.path.append(os.path.abspath("."))
 
 # Now you can import MultilayerPerceptron
+from AdamMultilayerPerceptron import AdamMultilayerPerceptron
 from MultilayerPerceptron import Perceptron
 
 
@@ -33,10 +34,15 @@ def read_hyperparameters_from_json(file_path):
 
 
 def train_perceptron(digits, labels, hyperparameters):
-    # Initialize perceptron using the hyperparameters
-    mlp = Perceptron(hyperparameters["layer_sizes"], beta=hyperparameters["beta"],
-                     learning_rate=hyperparameters["learning_rate"],
-                     momentum=hyperparameters["momentum"] if 'momentum' in hyperparameters else 0)
+    if "adam" in hyperparameters["optimizer"]:
+        # Initialize perceptron using the hyperparameters
+        mlp = AdamMultilayerPerceptron(hyperparameters["layer_sizes"], beta=hyperparameters["beta"],
+                         learning_rate=hyperparameters["learning_rate"])
+    else:
+        # Initialize perceptron using the hyperparameters
+        mlp = Perceptron(hyperparameters["layer_sizes"], beta=hyperparameters["beta"],
+                         learning_rate=hyperparameters["learning_rate"],
+                         momentum=hyperparameters["momentum"] if 'momentum' in hyperparameters else 0)
 
     # Train the perceptron
     best_weights, min_error, iterations, weight_history, error_history = mlp.train(digits, labels, epoch_limit=2500,
