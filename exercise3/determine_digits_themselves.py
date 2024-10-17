@@ -111,7 +111,7 @@ if __name__ == "__main__":
         # Calculate elapsed time
         elapsed_time = time.time() - start_time
 
-        training_accuracies, testing_accuracies = train_test_perceptron(mlp, digits, weight_history, 0.3)
+        training_accuracies, testing_accuracies = train_test_perceptron(mlp, digits, weight_history)
 
         # Append results to CSV
         append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, iterations, training_accuracies,
