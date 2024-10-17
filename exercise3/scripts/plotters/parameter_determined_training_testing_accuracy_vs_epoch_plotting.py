@@ -67,11 +67,11 @@ if __name__ == "__main__":
     # Limit X-axis to 2500 epochs
     plt.xlim([1, 2500])
 
-    # Add labels, title, and legend
+    # Add labels, title, and force the legend to the bottom right
     plt.xlabel('Epochs')
     plt.ylabel('Accuracy')
     plt.title(f'Training and Testing Accuracy for varying {varying_hyperparam}')
-    plt.legend()
+    plt.legend(loc='lower right')  # Positioning legend at bottom right
     plt.grid(True)
 
     # Save the plot

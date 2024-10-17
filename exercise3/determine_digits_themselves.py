@@ -58,10 +58,10 @@ def train_test_perceptron(p, dgts, w8_hist, noise_level=0.1):
     test_accus = []
     for weights in w8_hist:
         train_accus.append(_test_perceptron(p, dgts, weights=weights))
-        training_accuracy = 0
+        testing_accuracy = 0
         for i in range(4):
-            training_accuracy += _test_perceptron(p, dgts, noise_level, weights)
-        test_accus.append(training_accuracy / 4)
+            testing_accuracy += _test_perceptron(p, dgts, noise_level, weights)
+        test_accus.append(testing_accuracy / 4)
     return train_accus, test_accus
 
 
@@ -111,7 +111,7 @@ if __name__ == "__main__":
         # Calculate elapsed time
         elapsed_time = time.time() - start_time
 
-        training_accuracies, testing_accuracies = train_test_perceptron(mlp, digits, weight_history)
+        training_accuracies, testing_accuracies = train_test_perceptron(mlp, digits, weight_history, 0.3)
 
         # Append results to CSV
         append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, iterations, training_accuracies,
