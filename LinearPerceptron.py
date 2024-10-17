@@ -7,6 +7,7 @@ from sklearn.model_selection import cross_val_score, KFold
 
 from Perceptron import Perceptron, min_max_normalize_sigmoid, min_max_normalize_output
 
+
 def getErrorAveragesandStd(learning_rate):
     test_errors=[]
     learning_error=[]
@@ -19,7 +20,7 @@ def getErrorAveragesandStd(learning_rate):
             X_train, X_test = norm_X[train_index], norm_X[test_index]
             y_train, y_test = norm_Y[train_index], norm_Y[test_index]  
             
-            perceptron = SigmoidPerceptron(learning_rate=learning_rate, max_iterations=350)  
+            perceptron = LinearPerceptron(learning_rate=learning_rate, max_iterations=350)  
             trained_weights, iterations, errors = perceptron.fit(X_train, y_train)
             errors = [float(i) for i in errors]
             learning_error.append(errors)
@@ -48,7 +49,7 @@ def getErrorAveragesandStd_v2(learning_rate):
             X_train, X_test = norm_X[train_index], norm_X[test_index]
             y_train, y_test = norm_Y[train_index], norm_Y[test_index]  
             
-            perceptron = SigmoidPerceptron(learning_rate=learning_rate, max_iterations=1000)  
+            perceptron = LinearPerceptron(learning_rate=learning_rate, max_iterations=1000)  
             errors, test_error_l = perceptron.fit_v2(X_train, y_train, X_test, y_test, min_x, max_x)
             
             errors = [float(i) for i in errors]
@@ -73,23 +74,13 @@ def getErrorAveragesandStd_v2(learning_rate):
     
     return averages_list, std_devs, test_averages_list, std_devs_test
 
-
-class SigmoidPerceptron(Perceptron):
+class LinearPerceptron(Perceptron):
     def __init__(self, learning_rate=0.025, error_limit=0, max_iterations=10000):
         super().__init__(learning_rate, error_limit, max_iterations)
 
     @staticmethod
     def activate(excitations):
-        return np.tanh(excitations)  #change to 1 / 1 + np.exp(-excitations) for sigmoid
-    
-    @staticmethod
-    def derivative_activation(value):
-        result_log = 1 / (1 + np.exp(-value))
-        result_log_f = result_log * (1-result_log)
-        result_log_f = result_log_f * 1
-        result_tanh = 1 - (np.tanh(value) ** 2)
-        result_tanh_f = result_tanh * 1
-        return result_tanh_f # Change to result_log_f for sigmoid
+        return excitations
 
     def calculate_error(self, x, y):
         predictions = self.predict(x)
@@ -100,12 +91,11 @@ class SigmoidPerceptron(Perceptron):
 if __name__ == "__main__":
     # Read the CSV file
     df = pd.read_csv('exercise2/data/set.csv')
-
+    
     # Convert DataFrame to NumPy array
     X = df.to_numpy()
-
+    
     #Normalize inputs and expected outputs
-    #Change normalize function for sigmoid one when testing sigmoid function
     norm_X, min_x, max_x = min_max_normalize_output(X)
     print(norm_X)
 
@@ -123,48 +113,47 @@ if __name__ == "__main__":
     avg_0_1, std_0_1, avg_test_0_1, std_test_0_1 = getErrorAveragesandStd_v2(0.1)
     avg_0_3, std_0_3, avg_test_0_3, std_test_0_3 = getErrorAveragesandStd_v2(0.3)
     avg_0_5, std_0_5, avg_test_0_5, std_test_0_5 = getErrorAveragesandStd_v2(0.5)
-
     
     # Plotting
-    columns = range(1, len(avg_0_5) + 1)  # Column indices (1 to 200)
+    columns = range(1, len(avg_0_3) + 1)  # Column indices (1 to xxx)
     plt.figure(figsize=(12, 6))
 
     # Plot the averages and standard deviation
-    plt.plot(columns, avg_0_01, marker='o', color='fuchsia', label='Learning Rate 20 Training', linestyle='-')
+    plt.plot(columns, avg_0_01, marker='o', color='fuchsia', label='Learning Rate 0.01 Training', linestyle='-')
     plt.errorbar(columns, avg_0_01, yerr=std_0_01, fmt='o', color='fuchsia', capsize=5)
 
     plt.plot(columns, avg_test_0_01, marker='o', color='grey', label='Learning Rate 0.01 Test', linestyle='-')
     plt.errorbar(columns, avg_test_0_01, yerr=std_test_0_01, fmt='o', color='grey', capsize=5)
 
-    plt.plot(columns, avg_0_05, marker='o', color='gold', label='Learning Rate 22.5 Training', linestyle='-')
+    plt.plot(columns, avg_0_05, marker='o', color='gold', label='Learning Rate 0.05 Training', linestyle='-')
     plt.errorbar(columns, avg_0_05, yerr=std_0_05, fmt='o', color='gold', capsize=5)
     
     plt.plot(columns, avg_test_0_05, marker='o', color='indigo', label='Learning Rate 0.05 Test', linestyle='-')
     plt.errorbar(columns, avg_test_0_05, yerr=std_test_0_05, fmt='o', color='indigo', capsize=5)
 
-    plt.plot(columns, avg_0_1, marker='o', color='skyblue', label='Learning Rate 25 Training', linestyle='-')
+    plt.plot(columns, avg_0_1, marker='o', color='skyblue', label='Learning Rate 0.1 Training', linestyle='-')
     plt.errorbar(columns, avg_0_1, yerr=std_0_1, fmt='o', color='skyblue', capsize=5)
     
     plt.plot(columns, avg_test_0_1, marker='o', color='orange', label='Learning Rate 0.1 Test', linestyle='-')
     plt.errorbar(columns, avg_test_0_1, yerr=std_test_0_1, fmt='o', color='orange', capsize=5)
 
-    plt.plot(columns, avg_0_3, marker='o', color='orchid', label='Learning Rate 27.5 Training', linestyle='-')
+    plt.plot(columns, avg_0_3, marker='o', color='orchid', label='Learning Rate 0.35 Training', linestyle='-')
     plt.errorbar(columns, avg_0_3, yerr=std_0_3, fmt='o', color='orchid', capsize=5)
     
-    plt.plot(columns, avg_test_0_3, marker='o', color='goldenrod', label='Learning Rate 0.3 Test', linestyle='-')
+    plt.plot(columns, avg_test_0_3, marker='o', color='goldenrod', label='Learning Rate 0.35 Test', linestyle='-')
     plt.errorbar(columns, avg_test_0_3, yerr=std_test_0_3, fmt='o', color='goldenrod', capsize=5)
 
-    plt.plot(columns, avg_0_5, marker='o', color='skyblue', label='Learning Rate 30 Training', linestyle='-')
-    plt.errorbar(columns, avg_0_5, yerr=std_0_5, fmt='o', color='skyblue', capsize=5)
+    plt.plot(columns, avg_0_5, marker='o', color='mediumseagreen', label='Learning Rate 0.5 Training', linestyle='-')
+    plt.errorbar(columns, avg_0_5, yerr=std_0_5, fmt='o', color='mediumseagreen', capsize=5)
     
-    plt.plot(columns, avg_test_0_5, marker='o', color='orchid', label='Learning Rate 30 Test', linestyle='-')
-    plt.errorbar(columns, avg_test_0_5, yerr=std_test_0_5, fmt='o', color='orchid', capsize=5)
+    plt.plot(columns, avg_test_0_5, marker='o', color='tomato', label='Learning Rate 0.5 Test', linestyle='-')
+    plt.errorbar(columns, avg_test_0_5, yerr=std_test_0_5, fmt='o', color='tomato', capsize=5)
 
     # Add labels and title
     plt.xticks(ticks=range(0, 1001, 50))  # Set x-ticks to the column numbers
     plt.xlabel('Iteration of Perceptron')
     plt.ylabel('Average Error')
-    plt.title('Average training error vs test error per iteration of Non-Linear Perceptron with Sigmoid')
+    plt.title('Error in training set vs test set per iteration for Linear Perceptron')
     plt.grid(axis='y')  # Add grid lines for better readability
     plt.legend()  # Show legend
     plt.show()

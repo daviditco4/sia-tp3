@@ -130,34 +130,34 @@ if __name__ == "__main__":
     plt.figure(figsize=(12, 6))
 
     # Plot the averages and standard deviation
-    plt.plot(columns, avg_0_01, marker='o', color='fuchsia', label='Learning Rate 20 Training', linestyle='-')
+    plt.plot(columns, avg_0_01, marker='o', color='fuchsia', label='Learning Rate 0.01 Training', linestyle='-')
     plt.errorbar(columns, avg_0_01, yerr=std_0_01, fmt='o', color='fuchsia', capsize=5)
 
     plt.plot(columns, avg_test_0_01, marker='o', color='grey', label='Learning Rate 0.01 Test', linestyle='-')
     plt.errorbar(columns, avg_test_0_01, yerr=std_test_0_01, fmt='o', color='grey', capsize=5)
 
-    plt.plot(columns, avg_0_05, marker='o', color='gold', label='Learning Rate 22.5 Training', linestyle='-')
+    plt.plot(columns, avg_0_05, marker='o', color='gold', label='Learning Rate 0.05 Training', linestyle='-')
     plt.errorbar(columns, avg_0_05, yerr=std_0_05, fmt='o', color='gold', capsize=5)
     
     plt.plot(columns, avg_test_0_05, marker='o', color='indigo', label='Learning Rate 0.05 Test', linestyle='-')
     plt.errorbar(columns, avg_test_0_05, yerr=std_test_0_05, fmt='o', color='indigo', capsize=5)
 
-    plt.plot(columns, avg_0_1, marker='o', color='skyblue', label='Learning Rate 25 Training', linestyle='-')
+    plt.plot(columns, avg_0_1, marker='o', color='skyblue', label='Learning Rate 0.1 Training', linestyle='-')
     plt.errorbar(columns, avg_0_1, yerr=std_0_1, fmt='o', color='skyblue', capsize=5)
     
     plt.plot(columns, avg_test_0_1, marker='o', color='orange', label='Learning Rate 0.1 Test', linestyle='-')
     plt.errorbar(columns, avg_test_0_1, yerr=std_test_0_1, fmt='o', color='orange', capsize=5)
 
-    plt.plot(columns, avg_0_3, marker='o', color='orchid', label='Learning Rate 27.5 Training', linestyle='-')
+    plt.plot(columns, avg_0_3, marker='o', color='orchid', label='Learning Rate 0.3 Training', linestyle='-')
     plt.errorbar(columns, avg_0_3, yerr=std_0_3, fmt='o', color='orchid', capsize=5)
     
     plt.plot(columns, avg_test_0_3, marker='o', color='goldenrod', label='Learning Rate 0.3 Test', linestyle='-')
     plt.errorbar(columns, avg_test_0_3, yerr=std_test_0_3, fmt='o', color='goldenrod', capsize=5)
 
-    plt.plot(columns, avg_0_5, marker='o', color='skyblue', label='Learning Rate 30 Training', linestyle='-')
+    plt.plot(columns, avg_0_5, marker='o', color='skyblue', label='Learning Rate 0.5 Training', linestyle='-')
     plt.errorbar(columns, avg_0_5, yerr=std_0_5, fmt='o', color='skyblue', capsize=5)
     
-    plt.plot(columns, avg_test_0_5, marker='o', color='orchid', label='Learning Rate 30 Test', linestyle='-')
+    plt.plot(columns, avg_test_0_5, marker='o', color='orchid', label='Learning Rate 0.5 Test', linestyle='-')
     plt.errorbar(columns, avg_test_0_5, yerr=std_test_0_5, fmt='o', color='orchid', capsize=5)
 
     # Add labels and title
