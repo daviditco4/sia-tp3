@@ -80,7 +80,7 @@ class SigmoidPerceptron(Perceptron):
 
     @staticmethod
     def activate(excitations):
-        return (1/(1 + np.exp(-excitations)))
+        return np.tanh(excitations)
     
     @staticmethod
     def derivative_activation(value):
@@ -89,7 +89,7 @@ class SigmoidPerceptron(Perceptron):
         result_log_f = result_log_f * 1
         result_tanh = 1 - (np.tanh(value) ** 2)
         result_tanh_f = result_tanh * 1
-        return result_log_f
+        return result_tanh_f
 
     def calculate_error(self, x, y):
         predictions = self.predict(x)
