@@ -101,19 +101,21 @@ if __name__ == "__main__":
     # Generate one-hot encoded labels for digits 0 to 9
     labels = generate_labels_for_digits()
 
-    # Start timing
-    start_time = time.time()
+    for _ in range(15):
+        # Start timing
+        start_time = time.time()
 
-    # Train the perceptron
-    mlp, iterations, weight_history, error_history = train_perceptron(digits, labels, hyperparameters)
+        # Train the perceptron
+        mlp, iterations, weight_history, error_history = train_perceptron(digits, labels, hyperparameters)
 
-    # Calculate elapsed time
-    elapsed_time = time.time() - start_time
+        # Calculate elapsed time
+        elapsed_time = time.time() - start_time
 
-    training_accuracies, testing_accuracies = train_test_perceptron(mlp, digits, weight_history)
+        training_accuracies, testing_accuracies = train_test_perceptron(mlp, digits, weight_history)
 
-    # Append results to CSV
-    append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, iterations, training_accuracies,
-                          testing_accuracies, error_history)
+        # Append results to CSV
+        append_results_to_csv(output_csv_file, elapsed_time, hyperparameters, iterations, training_accuracies,
+                              testing_accuracies, error_history)
 
-    print(f"Training completed in {elapsed_time:.2f} seconds with {training_accuracies[-1] * 100:.2f}% training accuracy")
+        print(
+            f"Training completed in {elapsed_time:.2f} seconds with {training_accuracies[-1] * 100:.2f}% training accuracy")

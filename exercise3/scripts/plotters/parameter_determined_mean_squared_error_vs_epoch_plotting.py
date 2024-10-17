@@ -49,6 +49,9 @@ if __name__ == "__main__":
         plt.plot(epochs, mse_means, label=f'{varying_hyperparam}: {val}')
         plt.fill_between(epochs, mse_means - mse_stds, mse_means + mse_stds, alpha=0.2)
 
+    # Limit X-axis to 2500 epochs
+    plt.xlim([1, 2500])
+
     # Add labels, title, and legend
     plt.xlabel('Epochs')
     plt.ylabel('Mean Squared Error')
@@ -58,6 +61,6 @@ if __name__ == "__main__":
 
     # Save the plot
     plt.savefig(
-        f"even_or_odd_{varying_hyperparam.lower().replace(" ", "_")}_determined_mean_squared_error_vs_epoch_plot.png",
+        f"digits_themselves_{varying_hyperparam.lower().replace(" ", "_")}_determined_mean_squared_error_vs_epoch_plot.png",
         dpi=300, bbox_inches='tight')
     plt.close()
