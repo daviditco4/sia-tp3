@@ -2,21 +2,32 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import root_mean_squared_error
 
-def min_max_normalize(X):
-        X_min = np.min(X, axis=0)
-        X_max = np.max(X, axis=0)
+def min_max_normalize_sigmoid(X):
+        X_min = np.min(X)
+        X_max = np.max(X)
         epsilon = 1e-8
-        return 2*((X - X_min) / (X_max - X_min + epsilon))-1, X_min, X_max
+        return ((X - X_min) / (X_max - X_min + epsilon)), X_min, X_max
     
 def min_max_normalize_output(y):
     y_min = np.min(y)
     y_max = np.max(y)
     epsilon = 1e-8
-    return ((y - y_min) / (y_max - y_min + epsilon)), y_min, y_max
+    return (2 * ((y - y_min) / (y_max - y_min + epsilon))) - 1, y_min, y_max
 
 # Function to denormalize output back to original scale (useful for regression tasks)
 def denormalize_output(y_norm, y_min, y_max):
+    return (((y_norm + 1)/2) * (y_max - y_min + 1e-8)) + y_min
+
+def denormalize_output_sigmoid(y_norm, y_min, y_max):
     return ((y_norm) * (y_max - y_min + 1e-8)) + y_min
+
+def meanSquareError(y_true, y_pred):
+    error_sum = 0
+    for i in range(len(y_true)):
+        aux = y_true[i] - y_pred[i]
+        error_sum = error_sum + (aux ** 2)
+    final_error = (error_sum / len(y_true))
+    return final_error
 
 #task1
 class Perceptron:
